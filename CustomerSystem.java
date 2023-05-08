@@ -46,12 +46,12 @@ public class CustomerSystem{
 
     //Start of Benford's Law
 
-    public static void validateSalesFile(){
-
+    public static String validateSalesFile(){
+        return null;
     }
 
-    public static void createSalesList(){
-
+    public static ArrayList createSalesList(){
+        return null;
     }
 
     public static void findFrequencies(){
@@ -87,9 +87,9 @@ public class CustomerSystem{
         // More variables for the main may be declared in the space below
 
         while (!userInput.equals(exitCondition)){
-            printMenu();
+            printMenu(); // Printing out the main menu
             System.out.println("Enter a number: ");          
-            userInput = reader.nextLine();       // User selection from the menu                    // Printing out the main menu
+            userInput = reader.nextLine(); // User selection from the menu    
 
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
