@@ -27,7 +27,50 @@ public class CustomerSystem{
 
     }
 
-    public static void 
+    public static void generateCustomerDataFile(){
+
+    }
+
+    public static void getId(){
+
+    }
+
+    public static void writeFile(){
+        // when creating, overwrites file if it alreadty exists
+        // when appending, adds to existing file
+    }
+
+    //End of Luhn Algorithm functions
+
+    //Start of Benford's Law
+
+    public static void validateSalesFile(){
+
+    }
+
+    public static void createSalesList(){
+
+    }
+
+    public static void findFrequencies(){
+
+    }
+
+    public static void calculatePercentage(){
+
+    }
+
+    public static void plotGraph(){
+
+    }
+
+    public static void checkFraud(){
+
+    }
+    
+    public static void exportResults(){
+        
+    }
 
     public static void main(String[] args) {
     
