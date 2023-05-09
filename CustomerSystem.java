@@ -33,7 +33,8 @@ public class CustomerSystem{
         // This loop checks if the credit number is valid, if not then user is reprompted
         System.out.println("Enter your credit card number (9 or more numbers): ");
         int creditCardNum = reader.nextInt();
-        while (validateCreditCard(creditCardNum) == false){
+        while ((postalCode.length() < 3) || (validatePostalCode(postalCode) == false)){
+            System.out.println("This postal code is not a valid postal code.");
             System.out.println("Enter your credit card number (9 or more numbers): ");
             creditCardNum = reader.nextInt();
         }
@@ -42,26 +43,39 @@ public class CustomerSystem{
     }
 
     public static boolean validatePostalCode(String code){
-        return false;
+        return true;
     }
 
-    public static int reverseCard(int cardNum){
-        int reversed = 0;
-        // I reverse the credit card number
-        while(cardNum != 0) {
-            // get last digit from num
-            int digit = cardNum % 10;
-            reversed = reversed * 10 + digit;
-            // remove the last digit from num
-            cardNum /= 10;
+    public static long reverseCard(int cardNum){
+        String strCardNum = Long.toString(cardNum);
+        int[] arr = new int[strCardNum.length()];
+        for (int i = 0; i < strCardNum.length(); i++) {
+            arr[i] = strCardNum.charAt(i) - '0';
         }
-        System.out.println(reversed);
-        return reversed;
+        int[] rev = new int[strCardNum.length()];
+        for (int i = 0; i < strCardNum.length(); i++) {
+            rev[i] = arr[strCardNum.length() - i - 1];
+        }
+        long numberConverted = 0;
+        for (int number : rev) {
+            numberConverted = 10 * numberConverted + number;
+        }
+        return numberConverted;
     }
     
     public static int evenSum(String reversed, int num, int i){
         int doubleNum = Character.getNumericValue(reversed.charAt(i+1)) * 2;
         int evenVal = 0;
+
+        if (doubleNum > 9){
+                String strDoubleNum = Integer.toString(doubleNum);
+                int sumTwoDigits = Character.getNumericValue(strDoubleNum.charAt(0)) + Character.getNumericValue(strDoubleNum.charAt(1));
+                evenVal = num + sumTwoDigits;
+        }
+        // If the doubled value is a single digit, I add it directly to evenSum (i.e. sum2)
+        else {
+                evenVal = num + doubleNum;
+        }
         return evenVal;
     }
 
@@ -71,11 +85,11 @@ public class CustomerSystem{
     }
 
     public static boolean validateCreditCard(int num){
-        int reversedNum = reverseCard(num);
+        long reversedNum = reverseCard(num);
         int odd = 0;
         int even = 0;
 ;
-        String reversedNumString = Integer.toString(reversedNum);
+        String reversedNumString = Long.toString(reversedNum);
         for (int i = 0; i < reversedNumString.length()+1; i++){
             if (i % 2 == 1){
                 odd = oddSum(reversedNumString, odd, i);
