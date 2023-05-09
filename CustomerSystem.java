@@ -3,6 +3,13 @@ import java.util.ArrayList;
 public class CustomerSystem{
     public static void printMenu(){
         // print menu
+        System.out.println("Customer and Sales System");
+        System.out.println("1. Enter Customer Information");
+        System.out.println("2. Generate Customer data");
+        System.out.println("3. Report on total Sales");
+        System.out.println("4. Check for fraud in sales data");
+        System.out.println("9. Quit");
+        System.out.println("Enter menu option (1-9)");
     }
 
     public static void enterCustomerInfo(){
@@ -86,11 +93,11 @@ public class CustomerSystem{
 
         // More variables for the main may be declared in the space below
 
+
         while (!userInput.equals(exitCondition)){
             printMenu(); // Printing out the main menu
             System.out.println("Enter a number: ");          
             userInput = reader.nextLine(); // User selection from the menu    
-
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
                 // Any necessary variables may be added to this if section, but nowhere else in the code
@@ -112,9 +119,9 @@ public class CustomerSystem{
                 System.out.println("Please type in a valid option (A number from 1-9)");
                 userInput = reader.nextLine(); 
             }
-
+        }
         // Exits once the user types 
         System.out.println("Program Terminated");
-        }
+        reader.close();
     }
 } 
