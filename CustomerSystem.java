@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.*;
 public class CustomerSystem{
     public static void printMenu(){
         // print menu
