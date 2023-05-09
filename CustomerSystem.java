@@ -14,34 +14,97 @@ public class CustomerSystem{
 
     public static void enterCustomerInfo(){
         // get user input firstname lastname city
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Enter your first name: ");
+        String firstName = reader.nextLine();
+        System.out.print("Enter your last name: ");
+        String lastName = reader.nextLine();
+        System.out.print("Enter your city: ");
+        String city = reader.nextLine();
+        System.out.print("Enter your postal code (3 or more characters): ");
+        String postalCode = reader.nextLine();
+
+        while ((postalCode.length() < 3) || (validatePostalCode(postalCode) == false)) {
+            System.out.println("This postal code is not a valid postal code.");
+            System.out.println("Enter your postal code (3 or more characters): ");
+            postalCode = reader.nextLine();
+        }
+         
+        // This loop checks if the credit number is valid, if not then user is reprompted
+        System.out.println("Enter your credit card number (9 or more numbers): ");
+        int creditCardNum = reader.nextInt();
+        while (validateCreditCard(creditCardNum) == false){
+            System.out.println("Enter your credit card number (9 or more numbers): ");
+            creditCardNum = reader.nextInt();
+        }
+        int id = getId();
+        String dataSaver = id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum + "|";
     }
 
-    public static void validatePostalCode(){
-
+    public static boolean validatePostalCode(String code){
+        return false;
     }
 
-    public static void reverseCard(){
-
+    public static int reverseCard(int cardNum){
+        int reversed = 0;
+        // I reverse the credit card number
+        while(cardNum != 0) {
+            // get last digit from num
+            int digit = cardNum % 10;
+            reversed = reversed * 10 + digit;
+            // remove the last digit from num
+            cardNum /= 10;
+        }
+        System.out.println(reversed);
+        return reversed;
     }
     
-    public static void evenSum(){
-
+    public static int evenSum(String reversed, int num, int i){
+        int doubleNum = Character.getNumericValue(reversed.charAt(i+1)) * 2;
+        int evenVal = 0;
+        return evenVal;
     }
 
-    public static void oddSum(){
-
+    public static int oddSum(String reversed, int num, int i){
+        int oddVal =  num + Character.getNumericValue(reversed.charAt(i-1));
+        return oddVal;
     }
 
-    public static void validateCreditCard(){
-
+    public static boolean validateCreditCard(int num){
+        int reversedNum = reverseCard(num);
+        int odd = 0;
+        int even = 0;
+;
+        String reversedNumString = Integer.toString(reversedNum);
+        for (int i = 0; i < reversedNumString.length()+1; i++){
+            if (i % 2 == 1){
+                odd = oddSum(reversedNumString, odd, i);
+            }
+        }
+        for (int j = 0; j < reversedNumString.length()-1; j++){
+            if (j % 2 == 0){
+                even = evenSum(reversedNumString, even, j);
+            }
+        }
+        int finalSum = odd + even;
+        // Checks whether oddSum + evenSum ends with a 0, if so then return True
+        if (finalSum % 10 == 0){
+            return true;
+        }
+        // If Luhn Algorithm doesn't satisfy, return False
+        else{
+            System.out.println("This Credit Card number is not valid.");
+            return false;
+        }
     }
 
     public static void generateCustomerDataFile(){
 
     }
 
-    public static void getId(){
-
+    public static int getId(){
+        int i = 0;
+        return i;
     }
 
     public static void writeFile(){
