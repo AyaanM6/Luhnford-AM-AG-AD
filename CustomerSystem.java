@@ -13,7 +13,7 @@ public class CustomerSystem{
         System.out.println("Enter menu option (1-9)");
     }
 
-    public static void enterCustomerInfo(){
+    public static String enterCustomerInfo(){
         // get user input firstname lastname city
         Scanner reader = new Scanner(System.in);
         System.out.print("Enter your first name: ");
@@ -42,6 +42,7 @@ public class CustomerSystem{
         }
         int id = getId();
         String dataSaver = id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum + "|";
+        return dataSaver;
     }
 
     public static boolean validatePostalCode(String postalCode) {
@@ -115,7 +116,7 @@ public class CustomerSystem{
         long reversedNum = reverseCard(num);
         int odd = 0;
         int even = 0;
-;
+
         String reversedNumString = Long.toString(reversedNum);
         for (int i = 0; i < reversedNumString.length()+1; i++){
             if (i % 2 == 1){
@@ -139,9 +140,43 @@ public class CustomerSystem{
         }
     }
 
-    public static void generateCustomerDataFile(){
+    public static void generateCustomerDataFile(String totalUsrData){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("What would you like to call your file? ");
+        String fileName;
+        String filePath;
+        fileName = reader.nextLine();
+        System.out.println("path (ex: 'C:\\Users\\username\\Desktop\\Grade 11 Computer Science\\'): ");
+        filePath = reader.nextLine();
 
+        try {
+            File newFile = new File(filePath + fileName + ".csv");
+            if (newFile.createNewFile()){
+                System.out.println("File created: " + newFile.getName());
+            }
+            else {
+                System.out.println("File already exists.");
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+
+        try {
+            FileWriter myWriter = new FileWriter(filePath + fileName + ".csv");
+            myWriter.write(totalUsrData);
+            myWriter.close();
+            System.out.println("sucesfuly wrote");
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+
+        reader.close();
     }
+    
 
     public static int getId(){
         int i = 0;
@@ -199,17 +234,20 @@ public class CustomerSystem{
 
 
         while (!userInput.equals(exitCondition)){
+            String totalUsrData = "";
             printMenu(); // Printing out the main menu
             System.out.println("Enter a number: ");          
-            userInput = reader.nextLine(); // User selection from the menu    
+            userInput = reader.nextLine(); // User selection from the menu  
+             
+
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
                 // Any necessary variables may be added to this if section, but nowhere else in the code
-                enterCustomerInfo();
+                totalUsrData = enterCustomerInfo();
             }
             else if (userInput.equals(generateCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
-                generateCustomerDataFile();
+                generateCustomerDataFile(totalUsrData);
             }
             else if (userInput.equals(reportSalesOption)){
                 String filePath = validateSalesFile();
