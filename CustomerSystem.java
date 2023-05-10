@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.*; //Scanner, Arraylist
+import java.io.*; //BufferReader
+
 public class CustomerSystem{
     public static void printMenu(){
         // print menu
@@ -23,10 +25,11 @@ public class CustomerSystem{
         System.out.print("Enter your postal code (3 or more characters): ");
         String postalCode = reader.nextLine();
 
-        while ((postalCode.length() < 3) || (validatePostalCode(postalCode) == false)) {
-            System.out.println("This postal code is not a valid postal code.");
-            System.out.println("Enter your postal code (3 or more characters): ");
+        while ((postalCode.length() < 3) || (validatePostalCode(postalCode) == false)) { //If the postal code is less than 3 values or did not pass validation
+            System.out.println("Invalid postal code");
+            System.out.println("Please enter a valid postal code (capitalized and minimum 3 characters): ");
             postalCode = reader.nextLine();
+            validatePostalCode(postalCode);
         }
          
         // This loop checks if the credit number is valid, if not then user is reprompted
@@ -41,8 +44,33 @@ public class CustomerSystem{
         String dataSaver = id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum + "|";
     }
 
-    public static boolean validatePostalCode(String code){
-        return true;
+    public static boolean validatePostalCode(String postalCode) {
+        if (postalCode.length() < 3) {
+            return false; // This reprompts the user and validates their new input in the loop
+        }
+        BufferedReader csvReader = null;
+        try {
+            csvReader = new BufferedReader(new FileReader("postal_codes.csv"));
+            String row;
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split("\\|"); //delimiter
+                if (data[0].equals(postalCode.substring(0, 3))) { // Checks to see if one of the postal code prefixes match with the first 3 characters of the input
+                    return true; // This breaks out of the while loop and continues to the next section of the enterCustomerInfo() function
+                }
+            }
+        } catch (IOException e) { //"catch" id used for error handling IOexceptions, such as file corruption, permissions, accessibility, etc
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (csvReader != null) {
+                try {
+                    csvReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
     }
 
     public static long reverseCard(int cardNum){
@@ -196,8 +224,8 @@ public class CustomerSystem{
                 userInput = reader.nextLine(); 
             }
         }
-        // Exits once the user types 
+        // Exits once the user types
+        reader.close(); 
         System.out.println("Program Terminated");
-        reader.close();
     }
 } 
