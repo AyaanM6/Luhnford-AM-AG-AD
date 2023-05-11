@@ -46,7 +46,6 @@ public class CustomerSystem{
         System.out.println("Successful!");
 
         dataSaver.add(id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum); 
-        reader.close();
         return dataSaver;
     }
 
@@ -170,14 +169,12 @@ public class CustomerSystem{
                 myWriter.write(data.get(i) + "\n");
             }
             myWriter.close();
-            System.out.println("successfully wrote");
+            System.out.println("File successfully written.");
         }
         catch (IOException e) {
             System.out.println("Error");
             e.printStackTrace();
         }
-
-        reader.close();
     }
     
     public static void appendCustomerFile(int id,  ArrayList<String> data){
@@ -200,7 +197,6 @@ public class CustomerSystem{
             System.out.println("Error");
             e.printStackTrace();
         }
-        reader.close();
     }
 
     public static int getId(ArrayList<String> usrData, String fileName){
@@ -272,7 +268,8 @@ public class CustomerSystem{
         while (!userInput.equals(exitCondition)){
             printMenu(); // Printing out the main menu
             System.out.println("Enter a number: ");         
-            userInput = reader.nextLine(); // User selection from the menu    
+            userInput = reader.nextLine(); // User selection from the menu  
+              
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
                 // Any necessary variables may be added to this if section, but nowhere else in the code
@@ -284,10 +281,12 @@ public class CustomerSystem{
                 System.out.println(totalUsrData);
                 generateCustomerDataFile(id, totalUsrData);
                 totalUsrData.clear();
+                id = 0;
             }
             else if (userInput.equals(appendFile)){
                 appendCustomerFile(id, totalUsrData);
                 totalUsrData.clear();
+                id = 0;
             }
             else if (userInput.equals(reportSalesOption)){
                 String filePath = validateSalesFile();
