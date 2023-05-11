@@ -34,15 +34,30 @@ public class CustomerSystem{
         }
          
         // This loop checks if the credit number is valid, if not then user is reprompted
-        System.out.println("Enter your credit card number (9 or more numbers): ");
-        long creditCardNum = reader.nextLong();
-        String strCard = Long.toString(creditCardNum);
-        while ((validateCreditCard(creditCardNum) == false) || (strCard.length() < 9)){
-            System.out.println("This credit card number is not valid.");
+
+        long creditCardNum;
+        String strCard;
+
+        do {
             System.out.println("Enter your credit card number (9 or more numbers): ");
-            creditCardNum = reader.nextLong();
-            strCard = Long.toString(creditCardNum);
-        }
+            strCard = reader.nextLine();
+            strCard = strCard.replaceAll("[^0-9]", ""); // Deletes all non-digits 
+            
+            if(!strCard.isEmpty()){
+                creditCardNum = Long.parseLong(strCard); //Converts string to long data value
+            }
+            else{
+                creditCardNum = 0;
+                strCard = "0";
+            }
+
+            if (strCard.length() < 9 || !validateCreditCard(creditCardNum)) {
+                System.out.println("This credit card number is not valid.");
+            }
+
+        } 
+        while (strCard.length() < 9 || !validateCreditCard(creditCardNum));
+        
         System.out.println("Successful!");
 
         dataSaver.add(id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum); 
@@ -143,14 +158,12 @@ public class CustomerSystem{
     public static void generateCustomerDataFile(int id, ArrayList<String> data){
         Scanner reader = new Scanner(System.in);
         System.out.println("What would you like to call your file? ");
-        String fileName;
-        String filePath;
-        fileName = reader.nextLine();
+        String fileName = reader.nextLine();
         System.out.println("path (ex: 'C:\\Users\\username\\Desktop\\Grade 11 Computer Science\\'): ");
-        filePath = reader.nextLine();
+        String filePath = reader.nextLine();
+        File newFile = new File(filePath + fileName + ".csv");
 
         try {
-            File newFile = new File(filePath + fileName + ".csv");
             if (newFile.createNewFile()){
                 System.out.println("File created: " + newFile.getName());
             }
@@ -164,7 +177,7 @@ public class CustomerSystem{
         }
 
         try {
-            FileWriter myWriter = new FileWriter(filePath + "\\" + fileName + ".csv");
+            FileWriter myWriter = new FileWriter(newFile);
             for (int i = 0; i < id; i++) {
                 myWriter.write(data.get(i) + "\n");
             }
