@@ -7,13 +7,14 @@ public class CustomerSystem{
         System.out.println("Customer and Sales System");
         System.out.println("1. Enter Customer Information");
         System.out.println("2. Generate Customer data");
-        System.out.println("3. Report on total Sales");
-        System.out.println("4. Check for fraud in sales data");
+        System.out.println("3. Append Customer Data to existing File");
+        System.out.println("4. Report on total Sales");
+        System.out.println("5. Check for fraud in sales data");
         System.out.println("9. Quit");
         System.out.println("Enter menu option (1-9)");
     }
 
-    public static void enterCustomerInfo(){
+    public static ArrayList<String> enterCustomerInfo(int id, ArrayList<String> dataSaver){
         // get user input firstname lastname city
         Scanner reader = new Scanner(System.in);
         System.out.print("Enter your first name: ");
@@ -33,21 +34,37 @@ public class CustomerSystem{
         }
          
         // This loop checks if the credit number is valid, if not then user is reprompted
-        System.out.println("Enter your credit card number (9 or more numbers): ");
-        int creditCardNum = reader.nextInt();
-        while ((postalCode.length() < 3) || (validatePostalCode(postalCode) == false)){
-            System.out.println("This postal code is not a valid postal code.");
+
+        long creditCardNum;
+        String strCard;
+
+        do {
             System.out.println("Enter your credit card number (9 or more numbers): ");
-            creditCardNum = reader.nextInt();
-        }
-        int id = getId();
-        String dataSaver = id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum + "|";
+            strCard = reader.nextLine();
+            strCard = strCard.replaceAll("[^0-9]", ""); // Deletes all non-digits 
+            
+            if(!strCard.isEmpty()){
+                creditCardNum = Long.parseLong(strCard); //Converts string to long data value
+            }
+            else{
+                creditCardNum = 0;
+                strCard = "0";
+            }
+
+            if (strCard.length() < 9 || !validateCreditCard(creditCardNum)) {
+                System.out.println("This credit card number is not valid.");
+            }
+
+        } 
+        while (strCard.length() < 9 || !validateCreditCard(creditCardNum));
+        
+        System.out.println("Successful!");
+
+        dataSaver.add(id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum); 
+        return dataSaver;
     }
 
     public static boolean validatePostalCode(String postalCode) {
-        if (postalCode.length() < 3) {
-            return false; // This reprompts the user and validates their new input in the loop
-        }
         BufferedReader csvReader = null;
         try {
             csvReader = new BufferedReader(new FileReader("postal_codes.csv"));
@@ -73,7 +90,7 @@ public class CustomerSystem{
         return false;
     }
 
-    public static long reverseCard(int cardNum){
+    public static long reverseCard(long cardNum){
         String strCardNum = Long.toString(cardNum);
         int[] arr = new int[strCardNum.length()];
         for (int i = 0; i < strCardNum.length(); i++) {
@@ -111,11 +128,11 @@ public class CustomerSystem{
         return oddVal;
     }
 
-    public static boolean validateCreditCard(int num){
+    public static boolean validateCreditCard(long num){
         long reversedNum = reverseCard(num);
         int odd = 0;
         int even = 0;
-;
+
         String reversedNumString = Long.toString(reversedNum);
         for (int i = 0; i < reversedNumString.length()+1; i++){
             if (i % 2 == 1){
@@ -134,28 +151,89 @@ public class CustomerSystem{
         }
         // If Luhn Algorithm doesn't satisfy, return False
         else{
-            System.out.println("This Credit Card number is not valid.");
             return false;
         }
     }
 
-    public static void generateCustomerDataFile(){
+    public static void generateCustomerDataFile(int id, ArrayList<String> data){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Enter file name (without extension): ");
+        String fileName = reader.nextLine();
+        System.out.println("Enter file location (ex: 'C:\\Users\\username\\Desktop\\'): ");
+        String filePath = reader.nextLine();
+        File newFile = new File(filePath + fileName + ".csv");
 
+        try {
+            if (newFile.createNewFile()){
+                System.out.println("File created: " + newFile.getName());
+            }
+            else {
+                System.out.println("File already exists.");
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+
+        try {
+            FileWriter myWriter = new FileWriter(newFile);
+            for (int i = 0; i < id; i++) {
+                myWriter.write(data.get(i) + "\n");
+            }
+            myWriter.close();
+            System.out.println("File successfully written.");
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+    }
+    
+    public static void appendCustomerFile(int id,  ArrayList<String> data){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("What is the name and path of the existing file? ");
+        String file = reader.nextLine();
+        int newId = getId(data, file);
+        String holder = "";
+        try {
+            FileWriter csvwriter = new FileWriter(file, true);
+            for (int i = 0; i < id; i++) {
+                holder = data.get(i);
+                char charId = (char)(newId + '0');
+                csvwriter.append(holder.replace(holder.charAt(0), charId) + "\n");
+                newId = newId + 1;
+            }
+            csvwriter.close();
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
     }
 
-    public static int getId(){
-        int i = 0;
-        return i;
+    public static int getId(ArrayList<String> usrData, String fileName){
+        BufferedReader reader = null;
+        String row;
+        String holder;
+        int num = 0;
+        try {
+            reader = new BufferedReader(new FileReader(fileName));
+            while ((row = reader.readLine()) != null) {
+                num = num + 1;
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+        num = num + 1;
+        return num;
     }
 
-    public static void writeFile(){
-        // when creating, overwrites file if it alreadty exists
-        // when appending, adds to existing file
-    }
+    //End of Luhn Algorithm Functions
 
-    //End of Luhn Algorithm functions
-
-    //Start of Benford's Law
+    //Start of Benford's Law Functions
 
     public static String validateSalesFile(){
         return null;
@@ -189,27 +267,39 @@ public class CustomerSystem{
         Scanner reader = new Scanner(System.in);
         String userInput = "";
         String enterCustomerOption = "1";
-        String generateCustomerOption = "2";
-        String reportSalesOption = "3";
-        String checkFraudOption = "4";
+        String createCustomerFile = "2";
+        String appendFile = "3";
+        String reportSalesOption = "4";
+        String checkFraudOption = "5";
         String exitCondition = "9";
-        int number = 0;
 
         // More variables for the main may be declared in the space below
 
-
+        ArrayList<String> totalUsrData = new ArrayList<String>();
+        ArrayList<String> editedData = new ArrayList<String>();
+        int id = 0;
         while (!userInput.equals(exitCondition)){
             printMenu(); // Printing out the main menu
-            System.out.println("Enter a number: ");          
-            userInput = reader.nextLine(); // User selection from the menu    
+            System.out.println("Enter a number: ");         
+            userInput = reader.nextLine(); // User selection from the menu  
+              
             if (userInput.equals(enterCustomerOption)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
                 // Any necessary variables may be added to this if section, but nowhere else in the code
-                enterCustomerInfo();
+                id = id + 1;
+                totalUsrData = enterCustomerInfo(id, totalUsrData);
             }
-            else if (userInput.equals(generateCustomerOption)){
+            else if (userInput.equals(createCustomerFile)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
-                generateCustomerDataFile();
+                System.out.println(totalUsrData);
+                generateCustomerDataFile(id, totalUsrData);
+                totalUsrData.clear();
+                id = 0;
+            }
+            else if (userInput.equals(appendFile)){
+                appendCustomerFile(id, totalUsrData);
+                totalUsrData.clear();
+                id = 0;
             }
             else if (userInput.equals(reportSalesOption)){
                 String filePath = validateSalesFile();
@@ -224,8 +314,8 @@ public class CustomerSystem{
                 userInput = reader.nextLine(); 
             }
         }
-        // Exits once the user types
-        reader.close(); 
+        // Exits once the user types 
         System.out.println("Program Terminated");
+        reader.close();
     }
 } 
