@@ -270,20 +270,20 @@ public class CustomerSystem{
     
 
     public static ArrayList createSalesList(String strFilePath){   
+        ArrayList<String> arr = new ArrayList<String>();
         try{
             BufferedReader br = new BufferedReader(new FileReader(strFilePath));
-            String data = br.readLine();
             String row;
-            ArrayList<String> arr = new ArrayList<String>();
             while ((row = br.readLine()) != null) {
-                
+                String[] numArray = row.split("\\,"); //delimiter
+                arr.add(numArray[0]);
             }
             br.close();
         }
         catch (IOException e){
             e.printStackTrace();
-
         }
+        return arr;
         
     }
 
