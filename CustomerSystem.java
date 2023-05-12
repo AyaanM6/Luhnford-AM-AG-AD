@@ -236,7 +236,31 @@ public class CustomerSystem{
     //Start of Benford's Law Functions
 
     public static String validateSalesFile(){
-        return null;
+        Scanner reader = new Scanner(System.in);
+
+        try {
+            String filePath;
+            String fileName;
+            System.out.println("What file would you like to open? (name): ");
+            fileName = reader.nextLine();
+            System.out.println("What is the file path? ");
+            filePath = reader.nextLine();
+
+            File readFile = new File (filePath + fileName + ".csv");
+
+            BufferedReader br = new BufferedReader(new FileReader(readFile));
+            String data = br.readLine();
+            while (data != null) {
+                System.out.println(data);
+                data = br.readLine();
+            }
+            reader.close();
+            br.close();
+        } 
+        catch (IOException ioe) {
+            System.out.println("An error occurred.");
+            ioe.printStackTrace();
+        }
     }
 
     public static ArrayList createSalesList(){
