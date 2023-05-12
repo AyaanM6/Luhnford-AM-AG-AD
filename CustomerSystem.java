@@ -157,9 +157,9 @@ public class CustomerSystem{
 
     public static void generateCustomerDataFile(int id, ArrayList<String> data){
         Scanner reader = new Scanner(System.in);
-        System.out.println("What would you like to call your file? ");
+        System.out.println("Enter file name (without extension): ");
         String fileName = reader.nextLine();
-        System.out.println("path (ex: 'C:\\Users\\username\\Desktop\\Grade 11 Computer Science\\'): ");
+        System.out.println("Enter file location (ex: 'C:\\Users\\username\\Desktop\\'): ");
         String filePath = reader.nextLine();
         File newFile = new File(filePath + fileName + ".csv");
 
@@ -231,9 +231,9 @@ public class CustomerSystem{
         return num;
     }
 
-    //End of Luhn Algorithm functions
+    //End of Luhn Algorithm Functions
 
-    //Start of Benford's Law
+    //Start of Benford's Law Functions
 
     public static String validateSalesFile(){
         return null;
