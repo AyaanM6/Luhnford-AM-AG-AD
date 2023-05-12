@@ -238,33 +238,55 @@ public class CustomerSystem{
     public static String validateSalesFile(){
         Scanner reader = new Scanner(System.in);
 
-        try {
-            String filePath;
-            String fileName;
-            System.out.println("What file would you like to open? (name): ");
-            fileName = reader.nextLine();
-            System.out.println("What is the file path? ");
-            filePath = reader.nextLine();
+        Boolean fileFound = false;
 
-            File readFile = new File (filePath + fileName + ".csv");
+        while(fileFound = false){
+            try {
+                File filePath;
+                System.out.println("Enter the file name (without extension) or enter 'D' to load the default sales file: ");
+                String fileName = reader.nextLine();
+                if (fileName != "D"){
+                    System.out.println("Enter the file location (C:\\Users\\username\\Desktop\\Grade 11 Computer Science\\): ");
+                    String fileLocation = reader.nextLine();
+                    filePath = new File (fileLocation + fileName + ".csv");
+                }
+                else{
+                    filePath = new File ("sales.csv");
+                }
+                if (filePath.exists()){
+                    fileFound = true;
 
-            BufferedReader br = new BufferedReader(new FileReader(readFile));
-            String data = br.readLine();
-            while (data != null) {
-                System.out.println(data);
-                data = br.readLine();
+                }
+                else{
+                    System.out.println("File not found. Please enter a valid file name and location.");
+                }
+
+            } 
+            catch (FileNotFoundException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
             }
-            reader.close();
-            br.close();
-        } 
-        catch (IOException ioe) {
-            System.out.println("An error occurred.");
-            ioe.printStackTrace();
+
         }
     }
 
     public static ArrayList createSalesList(){
         return null;
+        
+                    //fileName = reader.nextLine();
+                    System.out.println("What is the file path? ");
+                
+    
+                    File readFile = new File (filePath + fileName + ".csv");
+        
+                    BufferedReader br = new BufferedReader(new FileReader(readFile));
+                    String data = br.readLine();
+                    while (data != null) {
+                        System.out.println(data);
+                        data = br.readLine();
+                    }
+                    reader.close();
+                    br.close();
     }
 
     public static void findFrequencies(){
