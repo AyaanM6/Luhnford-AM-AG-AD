@@ -1,7 +1,65 @@
 import java.util.*; //Scanner, Arraylist
 import java.io.*; //BufferReader
+import java.util.Arrays;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.stage.Stage;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 
-public class CustomerSystem{
+
+public class CustomerSystem extends Application{
+    @Override
+    public void start(Stage stage) {    
+      //Defining the axes              
+      CategoryAxis xAxis = new CategoryAxis(); 
+      ArrayList<Double> percentages = new ArrayList<Double>(Arrays.asList(10.5, 9.5, 8.5, 7.5, 6.5, 5.5, 4.5, 3.5, 2.5));
+      xAxis.setCategories(FXCollections.<String>
+      observableArrayList(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9")));
+      xAxis.setLabel("category");
+       
+      NumberAxis yAxis = new NumberAxis();
+      yAxis.setLabel("score");
+     
+      //Creating the Bar chart
+      BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis); 
+      barChart.setTitle("Comparison between various cars");
+        
+      //Prepare XYChart.Series objects by setting data       
+      XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+      series1.getData().add(new XYChart.Data<>("1", percentages.get(0)));
+      series1.getData().add(new XYChart.Data<>("2", percentages.get(1)));
+      series1.getData().add(new XYChart.Data<>("3", percentages.get(2)));
+      series1.getData().add(new XYChart.Data<>("4", percentages.get(3)));
+      series1.getData().add(new XYChart.Data<>("5", percentages.get(4)));
+      series1.getData().add(new XYChart.Data<>("6", percentages.get(5)));
+      series1.getData().add(new XYChart.Data<>("7", percentages.get(6)));
+      series1.getData().add(new XYChart.Data<>("8", percentages.get(7)));
+      series1.getData().add(new XYChart.Data<>("9", percentages.get(8)));
+        
+              
+      //Setting the data to bar chart       
+      barChart.getData().addAll(series1);
+        
+      //Creating a Group object 
+      Group root = new Group(barChart);
+        
+      //Creating a scene object
+      Scene scene = new Scene(root, 600, 400);
+
+      //Setting title to the Stage
+      stage.setTitle("Bar Chart");
+        
+      //Adding scene to the stage
+      stage.setScene(scene);
+        
+      //Displaying the contents of the stage
+      stage.show();        
+   }
     public static void printMenu(){
         // print menu
         System.out.println("Customer and Sales System");
