@@ -239,54 +239,52 @@ public class CustomerSystem{
         Scanner reader = new Scanner(System.in);
 
         Boolean fileFound = false;
+        File filePath;
+        String fileLocation;
+        String strFilePath = "";
 
-        while(fileFound = false){
-            try {
-                File filePath;
+        while(fileFound == false){
                 System.out.println("Enter the file name (without extension) or enter 'D' to load the default sales file: ");
                 String fileName = reader.nextLine();
-                if (fileName != "D"){
+                if (!fileName.equals("D")){
                     System.out.println("Enter the file location (C:\\Users\\username\\Desktop\\Grade 11 Computer Science\\): ");
-                    String fileLocation = reader.nextLine();
+                    fileLocation = reader.nextLine();
                     filePath = new File (fileLocation + fileName + ".csv");
                 }
                 else{
                     filePath = new File ("sales.csv");
+                    fileLocation = "";
+                    fileName = "sales";
                 }
                 if (filePath.exists()){
                     fileFound = true;
-
                 }
                 else{
                     System.out.println("File not found. Please enter a valid file name and location.");
                 }
+                strFilePath = fileLocation + fileName + ".csv";
 
-            } 
-            catch (FileNotFoundException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
+        } 
+        return strFilePath;
+    }
+    
+
+    public static ArrayList createSalesList(String strFilePath){   
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(strFilePath));
+            String data = br.readLine();
+            String row;
+            ArrayList<String> arr = new ArrayList<String>();
+            while ((row = br.readLine()) != null) {
+                
             }
+            br.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
 
         }
-    }
-
-    public static ArrayList createSalesList(){
-        return null;
         
-                    //fileName = reader.nextLine();
-                    System.out.println("What is the file path? ");
-                
-    
-                    File readFile = new File (filePath + fileName + ".csv");
-        
-                    BufferedReader br = new BufferedReader(new FileReader(readFile));
-                    String data = br.readLine();
-                    while (data != null) {
-                        System.out.println(data);
-                        data = br.readLine();
-                    }
-                    reader.close();
-                    br.close();
     }
 
     public static void findFrequencies(){
