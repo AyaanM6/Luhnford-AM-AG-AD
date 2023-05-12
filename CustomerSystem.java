@@ -318,7 +318,24 @@ public class CustomerSystem extends Application{
     }
     
     public static void exportResults(){
-        
+        ArrayList<Double> percentages = new ArrayList<Double>(Arrays.asList(10.5, 9.5, 8.5));
+        File newFile = new File("results.csv");
+        try { newFile.createNewFile(); }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+        try {
+            FileWriter myWriter = new FileWriter("sales.csv");
+            for (int i = 0; i < percentages.size(); i++) {
+                myWriter.write(percentages.get(i) + ", ");
+            }
+            myWriter.close();
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
