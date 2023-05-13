@@ -1,15 +1,17 @@
 import java.util.*; //Scanner, Arraylist
 import java.io.*; //BufferReader
+import java.lang.Math;
+import java.lang.reflect.Array;
 
 public class CustomerSystem{
     public static void printMenu(){
         // print menu
         System.out.println("Customer and Sales System");
         System.out.println("1. Enter Customer Information");
-        System.out.println("2. Generate Customer data");
-        System.out.println("3. Append Customer Data to existing File");
-        System.out.println("4. Report on total Sales");
-        System.out.println("5. Check for fraud in sales data");
+        System.out.println("2. Generate Customer Data");
+        System.out.println("3. Append Customer Data to Existing File");
+        System.out.println("4. Report on Total Sales");
+        System.out.println("5. Check for Fraud in Sales Data");
         System.out.println("9. Quit");
         System.out.println("Enter menu option (1-9)");
     }
@@ -58,9 +60,9 @@ public class CustomerSystem{
         } 
         while (strCard.length() < 9 || !validateCreditCard(creditCardNum));
         
-        System.out.println("Successful!");
+        System.out.println("Customer valdiated successfully!");
 
-        dataSaver.add(id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum); 
+        dataSaver.add(id + "," + firstName + "," + lastName + "," + city + "," + postalCode + "," + creditCardNum); 
         return dataSaver;
     }
 
@@ -75,10 +77,12 @@ public class CustomerSystem{
                     return true; // This breaks out of the while loop and continues to the next section of the enterCustomerInfo() function
                 }
             }
-        } catch (IOException e) { //"catch" id used for error handling IOexceptions, such as file corruption, permissions, accessibility, etc
+        }
+        catch (IOException e) { //"catch" id used for error handling IOexceptions, such as file corruption, permissions, accessibility, etc
             e.printStackTrace();
             return false;
-        } finally {
+        } 
+        finally {
             if (csvReader != null) {
                 try {
                     csvReader.close();
@@ -157,7 +161,7 @@ public class CustomerSystem{
 
     public static void generateCustomerDataFile(int id, ArrayList<String> data){
         Scanner reader = new Scanner(System.in);
-        System.out.println("Enter file name (without extension): ");
+        System.out.println("Enter new csv file name (without extension): ");
         String fileName = reader.nextLine();
         System.out.println("Enter file location (ex: 'C:\\Users\\username\\Desktop\\'): ");
         String filePath = reader.nextLine();
@@ -165,7 +169,7 @@ public class CustomerSystem{
 
         try {
             if (newFile.createNewFile()){
-                System.out.println("File created: " + newFile.getName());
+                System.out.println("File successfully created: " + newFile.getName());
             }
             else {
                 System.out.println("File already exists.");
@@ -178,11 +182,11 @@ public class CustomerSystem{
 
         try {
             FileWriter myWriter = new FileWriter(newFile);
+            myWriter.write("ID,First Name,Last Name,City,Postal Code,Card Number\n");
             for (int i = 0; i < id; i++) {
                 myWriter.write(data.get(i) + "\n");
             }
             myWriter.close();
-            System.out.println("File successfully written.");
         }
         catch (IOException e) {
             System.out.println("Error");
@@ -192,23 +196,27 @@ public class CustomerSystem{
     
     public static void appendCustomerFile(int id,  ArrayList<String> data){
         Scanner reader = new Scanner(System.in);
-        System.out.println("What is the name and path of the existing file? ");
-        String file = reader.nextLine();
-        int newId = getId(data, file);
+        System.out.println("Enter existing file name (without extensions): ");
+        String fileName = reader.nextLine();
+        System.out.println("Enter path of existing file (ex: 'C:\\Users\\username\\Desktop\\'): ");
+        String fileLocation = reader.nextLine();
+        String filePath = fileLocation + fileName + ".csv";
+        int newId = getId(data, filePath);
         String holder = "";
         try {
-            FileWriter csvwriter = new FileWriter(file, true);
+            FileWriter csvwriter = new FileWriter(filePath, true);
             for (int i = 0; i < id; i++) {
                 holder = data.get(i);
                 char charId = (char)(newId + '0');
                 csvwriter.append(holder.replace(holder.charAt(0), charId) + "\n");
                 newId = newId + 1;
             }
+            System.out.println("Data successfully appended to " + filePath);
             csvwriter.close();
         }
         catch (IOException e) {
             System.out.println("Error");
-            e.printStackTrace();
+            e.printStackTrace(); //prints all issues
         }
     }
 
@@ -269,38 +277,80 @@ public class CustomerSystem{
     }
     
 
-    public static ArrayList createSalesList(String strFilePath){   
-        ArrayList<String> arr = new ArrayList<String>();
-        try{
-            BufferedReader br = new BufferedReader(new FileReader(strFilePath));
-            String row;
-            while ((row = br.readLine()) != null) {
-                String[] numArray = row.split("\\,"); //delimiter
-                arr.add(numArray[0]);
+   public static ArrayList<String> createSalesList(String strFilePath) {   
+    ArrayList<String> arr = new ArrayList<String>();
+    try {
+        BufferedReader br = new BufferedReader(new FileReader(strFilePath));
+        String row;
+        while ((row = br.readLine()) != null) {
+            String[] numArray = row.split(",");
+            for (String numStr : numArray) {
+                try {
+                    Double num = Double.parseDouble(numStr); //used to test if numStr is able to be converted to a Double. If not, non-numerical values are caught and skipped
+                    arr.add(Character.toString(numStr.charAt(0)));
+                } 
+                catch (NumberFormatException e) {
+                    // skip non-numeric values
+                }
             }
-            br.close();
         }
-        catch (IOException e){
-            e.printStackTrace();
+        System.out.println(arr);
+        br.close();
+    } 
+    catch (IOException e) {
+        e.printStackTrace();
+    }
+    return arr;
+}
+
+    public static ArrayList<Integer> findFrequencies(ArrayList<String> salesList){
+
+        ArrayList<Integer> frequencyList = new ArrayList<Integer>();
+        int digitFrequency;
+
+        for (int i = 0; i < 9; i++) {
+            digitFrequency = Collections.frequency(salesList, String.valueOf(i+1));
+            frequencyList.add(digitFrequency);
         }
-        return arr;
+
+        System.out.println(frequencyList);
+        return frequencyList;
+
+    }
+
+    public static ArrayList<Double> calculatePercentage(ArrayList<Integer> frequencyList){
+
+        ArrayList<Double> percentageList = new ArrayList<Double>();
+        int totalDigits = 0;
         
-    }
+        // adds up all of the elements in frequencyList to find the total number of digits
+        for (int i = 0; i < frequencyList.size(); i++) {
+            totalDigits += frequencyList.get(i);
+        }
 
-    public static void findFrequencies(){
+        for (int i = 0; i < frequencyList.size(); i++) {
+            double percentage = Math.round(frequencyList.get(i) * 1000.0 / totalDigits) / 10.0;
+            percentageList.add(percentage);
+        }
 
-    }
-
-    public static void calculatePercentage(){
-
+        System.out.println(percentageList);
+        return percentageList;
     }
 
     public static void plotGraph(){
 
     }
 
-    public static void checkFraud(){
+    public static void checkFraud(ArrayList<Double> percentageList){
 
+        double digit1Percentage = percentageList.get(0);
+
+        if (digit1Percentage >= 29 && digit1Percentage <= 32) {
+            System.out.println("\nFraud did not likely occur");
+        } 
+        else {
+            System.out.println("\nFraud likely occured");
+        }
     }
     
     public static void exportResults(){
@@ -309,6 +359,7 @@ public class CustomerSystem{
 
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
+        boolean preReq = false;
         String userInput = "";
         String enterCustomerOption = "1";
         String createCustomerFile = "2";
@@ -319,9 +370,16 @@ public class CustomerSystem{
 
         // More variables for the main may be declared in the space below
 
+        //Initializing empty lists for Luhn Algorithm
         ArrayList<String> totalUsrData = new ArrayList<String>();
         ArrayList<String> editedData = new ArrayList<String>();
         int id = 0;
+
+        //Initializing empty lists for Benford's Law
+        ArrayList<String> salesList = new ArrayList<String>();
+        ArrayList<Integer> frequencyList = new ArrayList<Integer>();
+        ArrayList<Double> percentageList = new ArrayList<Double>();
+
         while (!userInput.equals(exitCondition)){
             printMenu(); // Printing out the main menu
             System.out.println("Enter a number: ");         
@@ -335,7 +393,6 @@ public class CustomerSystem{
             }
             else if (userInput.equals(createCustomerFile)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
-                System.out.println(totalUsrData);
                 generateCustomerDataFile(id, totalUsrData);
                 totalUsrData.clear();
                 id = 0;
@@ -347,15 +404,24 @@ public class CustomerSystem{
             }
             else if (userInput.equals(reportSalesOption)){
                 String filePath = validateSalesFile();
-                ArrayList<String> salesList = new ArrayList<String>();
-                salesList = createSalesList();
+                salesList = createSalesList(filePath);
+                System.out.println("Sales file data loaded successfully!");
+                preReq = true; //Allows the user to c
             }
-            else if (userInput.equals(checkFraudOption)){ 
-                checkFraud();
+            else if (userInput.equals(checkFraudOption) && (preReq == true)){ 
+                frequencyList = findFrequencies(salesList);
+                percentageList = calculatePercentage(frequencyList);
+                //plot graph here
+                checkFraud(percentageList);
             }
             else{
-                System.out.println("Please type in a valid option (A number from 1-9)");
-                userInput = reader.nextLine(); 
+                //if prerequisite (completing option 4 before choosing option 5) is not met 
+                if(preReq == false){ 
+                    System.out.println("Please report sales data first (option 4)");
+                }
+                else{
+                    System.out.println("Please type in a valid option (A number from 1-9)");
+                }
             }
         }
         // Exits once the user types 
