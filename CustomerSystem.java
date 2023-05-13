@@ -1,8 +1,77 @@
 import java.util.*; //Scanner, Arraylist
 import java.io.*; //BufferReader
 import java.lang.Math;
+import java.lang.reflect.Array;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.stage.Stage;
+import javafx.scene.chart.NumberAxis;
+import javafx.geometry.Side;
+import javafx.scene.chart.XYChart;
 
-public class CustomerSystem{
+public class CustomerSystem extends Application {
+    private static ArrayList<Double> percentList = new ArrayList<Double>();
+    @Override
+    public void start(Stage stage) {    
+        //Defining the axes              
+        CategoryAxis xAxis = new CategoryAxis(); 
+        xAxis.setCategories(FXCollections.<String>
+        observableArrayList(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9")));
+        xAxis.setLabel("First Digit");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Frequency Percentage");
+
+        //Creating the Bar chart
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis); 
+        barChart.setTitle("Benford's Law Frequency Percentage of Digit Appearance in File");
+            
+        //Prepare XYChart.Series objects by setting data       
+        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+        Double num1 = percentList.get(0);
+        Double num2 = percentList.get(1);
+        Double num3 = percentList.get(2);
+        Double num4 = percentList.get(3);
+        Double num5 = percentList.get(4);
+        Double num6 = percentList.get(5);
+        Double num7 = percentList.get(6);
+        Double num8 = percentList.get(7);
+        Double num9 = percentList.get(8);
+        series1.setName("1 = "+num1+"%\n"+"2 = "+num2+"%\n" +"3 = "+num3+"%\n"+"4 = "+num4+"%\n"+"5 = "+num5+"%\n"+"6 = "+num6+"%\n"+"7 = "+num7+"%\n"+"8 = "+num8+"%\n"+"9 = "+num9+"%");
+        series1.getData().add(new XYChart.Data<>("1", num1));
+        series1.getData().add(new XYChart.Data<>("2", num2));
+        series1.getData().add(new XYChart.Data<>("3", num3));
+        series1.getData().add(new XYChart.Data<>("4", num4));
+        series1.getData().add(new XYChart.Data<>("5", num5));
+        series1.getData().add(new XYChart.Data<>("6", num6));
+        series1.getData().add(new XYChart.Data<>("7", num7));
+        series1.getData().add(new XYChart.Data<>("8", num8));
+        series1.getData().add(new XYChart.Data<>("9", num9));
+            
+                
+        //Setting the data to bar chart       
+        barChart.getData().addAll(series1);
+        //Creating a Group object 
+        Group root = new Group(barChart);
+        barChart.setLegendSide(Side.RIGHT);
+        
+        //Creating a scene object
+        Scene scene = new Scene(root, 600, 400);
+
+        //Setting title to the Stage
+        stage.setTitle("Bar Chart");
+            
+        //Adding scene to the stage
+        stage.setScene(scene);
+            
+        //Displaying the contents of the stage
+        stage.show();      
+    }
+    
     public static void printMenu(){
         // print menu
         System.out.println("Customer and Sales System");
@@ -240,7 +309,7 @@ public class CustomerSystem{
 
     //End of Luhn Algorithm Functions
 
-    //Start of Benford's Law Functions
+    //Start of Benford's Law Functions (minus graph plotting done at top)
 
     public static String validateSalesFile(){
         Scanner reader = new Scanner(System.in);
@@ -336,72 +405,6 @@ public class CustomerSystem{
         return percentageList;
     }
 
-    public static void plotGraph(){
-        /*
-import java.lang.reflect.Array;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.stage.Stage;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-
-
-public class CustomerSystem extends Application{
-    @Override
-    public void start(Stage stage) {    
-    //Defining the axes              
-    CategoryAxis xAxis = new CategoryAxis(); 
-    ArrayList<Double> percentages = new ArrayList<Double>(Arrays.asList(10.5, 9.5, 8.5, 7.5, 6.5, 5.5, 4.5, 3.5, 2.5));
-    xAxis.setCategories(FXCollections.<String>
-    observableArrayList(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9")));
-    xAxis.setLabel("category");
-
-    NumberAxis yAxis = new NumberAxis();
-    yAxis.setLabel("score");
-
-    //Creating the Bar chart
-    BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis); 
-    barChart.setTitle("Comparison between various cars");
-        
-    //Prepare XYChart.Series objects by setting data       
-    XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-    series1.getData().add(new XYChart.Data<>("1", percentages.get(0)));
-    series1.getData().add(new XYChart.Data<>("2", percentages.get(1)));
-    series1.getData().add(new XYChart.Data<>("3", percentages.get(2)));
-    series1.getData().add(new XYChart.Data<>("4", percentages.get(3)));
-    series1.getData().add(new XYChart.Data<>("5", percentages.get(4)));
-    series1.getData().add(new XYChart.Data<>("6", percentages.get(5)));
-    series1.getData().add(new XYChart.Data<>("7", percentages.get(6)));
-    series1.getData().add(new XYChart.Data<>("8", percentages.get(7)));
-    series1.getData().add(new XYChart.Data<>("9", percentages.get(8)));
-        
-            
-    //Setting the data to bar chart       
-    barChart.getData().addAll(series1);
-        
-    //Creating a Group object 
-    Group root = new Group(barChart);
-        
-    //Creating a scene object
-    Scene scene = new Scene(root, 600, 400);
-
-    //Setting title to the Stage
-    stage.setTitle("Bar Chart");
-        
-    //Adding scene to the stage
-    stage.setScene(scene);
-        
-    //Displaying the contents of the stage
-    stage.show();        
-    }
-         */
-
-    }
-
     public static void checkFraud(ArrayList<Double> percentageList){
 
         double digit1Percentage = percentageList.get(0);
@@ -414,9 +417,30 @@ public class CustomerSystem extends Application{
         }
     }
     
-    public static void exportResults(){
-        
-    }
+    public static void exportResults(ArrayList<Double> percentages){
+        File newFile = new File("results.csv");
+        try { newFile.createNewFile(); }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+        try {
+            FileWriter myWriter = new FileWriter("sales.csv");
+            for (int i = 0; i < percentages.size(); i++) {
+                if (i == percentages.size()-1) {
+                    myWriter.write(Double.toString(percentages.get(i)));
+                }
+                else {
+                    myWriter.write(percentages.get(i) + ", ");
+                }
+            }
+            myWriter.close();
+        }
+        catch (IOException e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+    }    
 
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
@@ -472,8 +496,11 @@ public class CustomerSystem extends Application{
             else if (userInput.equals(checkFraudOption) && (preReq == true)){ 
                 frequencyList = findFrequencies(salesList);
                 percentageList = calculatePercentage(frequencyList);
+                percentList = calculatePercentage(frequencyList);
                 //plot graph here
-                checkFraud(percentageList);
+                checkFraud(percentList);
+                exportResults(percentList);
+                launch(args);
             }
             else{
                 //if prerequisite (completing option 4 before choosing option 5) is not met 
