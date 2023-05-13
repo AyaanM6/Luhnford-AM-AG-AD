@@ -1,6 +1,7 @@
 import java.util.*; //Scanner, Arraylist
 import java.io.*; //BufferReader
 import java.lang.Math;
+// Imports for creating graph
 import java.lang.reflect.Array;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -13,8 +14,12 @@ import javafx.scene.chart.NumberAxis;
 import javafx.geometry.Side;
 import javafx.scene.chart.XYChart;
 
+// extends existing class
 public class CustomerSystem extends Application {
+    // Array list that can be accessed anywhere in the class
+    // Used to pass percentList as a parameter
     private static ArrayList<Double> percentList = new ArrayList<Double>();
+    // Override existing method in parent class
     @Override
     public void start(Stage stage) {    
         //Defining the axes              
@@ -41,6 +46,7 @@ public class CustomerSystem extends Application {
         Double num7 = percentList.get(6);
         Double num8 = percentList.get(7);
         Double num9 = percentList.get(8);
+        // This adds the data into the bar chart
         series1.setName("1 = "+num1+"%\n"+"2 = "+num2+"%\n" +"3 = "+num3+"%\n"+"4 = "+num4+"%\n"+"5 = "+num5+"%\n"+"6 = "+num6+"%\n"+"7 = "+num7+"%\n"+"8 = "+num8+"%\n"+"9 = "+num9+"%");
         series1.getData().add(new XYChart.Data<>("1", num1));
         series1.getData().add(new XYChart.Data<>("2", num2));
@@ -96,7 +102,8 @@ public class CustomerSystem extends Application {
         System.out.print("Enter your postal code (3 or more characters): ");
         String postalCode = reader.nextLine();
 
-        while ((postalCode.length() < 3) || (validatePostalCode(postalCode) == false)) { //If the postal code is less than 3 values or did not pass validation
+        //If the postal code is less than 3 values or did not pass validation
+        while ((postalCode.length() < 3) || (validatePostalCode(postalCode) == false)) { 
             System.out.println("Invalid postal code");
             System.out.println("Please enter a valid postal code (capitalized and minimum 3 characters): ");
             postalCode = reader.nextLine();
@@ -105,9 +112,11 @@ public class CustomerSystem extends Application {
          
         // This loop checks if the credit number is valid, if not then user is reprompted
 
+        // We are using the data type long, because int does not support numbers above 9 digits
         long creditCardNum;
         String strCard;
 
+        // do while loop to re prompt user for card number
         do {
             System.out.println("Enter your credit card number (9 or more numbers): ");
             strCard = reader.nextLine();
@@ -130,6 +139,7 @@ public class CustomerSystem extends Application {
         
         System.out.println("Customer valdiated successfully!");
 
+        // stores and returns customer data into an array
         dataSaver.add(id + "," + firstName + "," + lastName + "," + city + "," + postalCode + "," + creditCardNum); 
         return dataSaver;
     }
@@ -150,6 +160,7 @@ public class CustomerSystem extends Application {
             e.printStackTrace();
             return false;
         } 
+        // Used for error handling
         finally {
             if (csvReader != null) {
                 try {
@@ -163,15 +174,19 @@ public class CustomerSystem extends Application {
     }
 
     public static long reverseCard(long cardNum){
+        // converts cardNum into a string
         String strCardNum = Long.toString(cardNum);
         int[] arr = new int[strCardNum.length()];
+        // converts the string into an array
         for (int i = 0; i < strCardNum.length(); i++) {
             arr[i] = strCardNum.charAt(i) - '0';
         }
+        // reverses the array and saves it to another array
         int[] rev = new int[strCardNum.length()];
         for (int i = 0; i < strCardNum.length(); i++) {
             rev[i] = arr[strCardNum.length() - i - 1];
         }
+        // converts the reversed array of integers back into a long
         long numberConverted = 0;
         for (int number : rev) {
             numberConverted = 10 * numberConverted + number;
@@ -182,7 +197,7 @@ public class CustomerSystem extends Application {
     public static int evenSum(String reversed, int num, int i){
         int doubleNum = Character.getNumericValue(reversed.charAt(i+1)) * 2;
         int evenVal = 0;
-
+        // Checks if double num is double digit
         if (doubleNum > 9){
                 String strDoubleNum = Integer.toString(doubleNum);
                 int sumTwoDigits = Character.getNumericValue(strDoubleNum.charAt(0)) + Character.getNumericValue(strDoubleNum.charAt(1));
@@ -196,6 +211,7 @@ public class CustomerSystem extends Application {
     }
 
     public static int oddSum(String reversed, int num, int i){
+        // adds every odd number into oddVal
         int oddVal =  num + Character.getNumericValue(reversed.charAt(i-1));
         return oddVal;
     }
@@ -206,11 +222,13 @@ public class CustomerSystem extends Application {
         int even = 0;
 
         String reversedNumString = Long.toString(reversedNum);
+        // calls oddSum for every odd number 
         for (int i = 0; i < reversedNumString.length()+1; i++){
             if (i % 2 == 1){
                 odd = oddSum(reversedNumString, odd, i);
             }
         }
+        // calls evenSum for every even number 
         for (int j = 0; j < reversedNumString.length()-1; j++){
             if (j % 2 == 0){
                 even = evenSum(reversedNumString, even, j);
@@ -229,12 +247,16 @@ public class CustomerSystem extends Application {
 
     public static void generateCustomerDataFile(int id, ArrayList<String> data){
         Scanner reader = new Scanner(System.in);
+        // takes the file name and path for the file the user wants to generate
         System.out.println("Enter new csv file name (without extension): ");
         String fileName = reader.nextLine();
         System.out.println("Enter file location (ex: 'C:\\Users\\username\\Desktop\\'): ");
         String filePath = reader.nextLine();
         File newFile = new File(filePath + fileName + ".csv");
 
+        // checks if the file already exists.
+        // if it doesn't, creates the new file
+        // if the file already exists, it tells the user 
         try {
             if (newFile.createNewFile()){
                 System.out.println("File successfully created: " + newFile.getName());
@@ -271,6 +293,7 @@ public class CustomerSystem extends Application {
         String filePath = fileLocation + fileName + ".csv";
         int newId = getId(data, filePath);
         String holder = "";
+        // this generates the IDs for all the new customer info and appends it to the file
         try {
             FileWriter csvwriter = new FileWriter(filePath, true);
             for (int i = 0; i < id; i++) {
@@ -293,6 +316,7 @@ public class CustomerSystem extends Application {
         String row;
         String holder;
         int num = 0;
+        // finds the ID for the customer information by looping through the existing file
         try {
             reader = new BufferedReader(new FileReader(fileName));
             while ((row = reader.readLine()) != null) {
@@ -319,6 +343,8 @@ public class CustomerSystem extends Application {
         String fileLocation;
         String strFilePath = "";
 
+        // while loop to reprompt user until fileFound is true
+        // fileFound becomes true if the file exists and is valid
         while(fileFound == false){
                 System.out.println("Enter the file name (without extension) or enter 'D' to load the default sales file: ");
                 String fileName = reader.nextLine();
