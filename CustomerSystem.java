@@ -1,73 +1,16 @@
 import java.util.*; //Scanner, Arraylist
 import java.io.*; //BufferReader
-import java.util.Arrays;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.stage.Stage;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import java.lang.Math;
 
-
-public class CustomerSystem extends Application{
-    @Override
-    public void start(Stage stage) {    
-      //Defining the axes              
-      CategoryAxis xAxis = new CategoryAxis(); 
-      ArrayList<Double> percentages = new ArrayList<Double>(Arrays.asList(10.5, 9.5, 8.5, 7.5, 6.5, 5.5, 4.5, 3.5, 2.5));
-      xAxis.setCategories(FXCollections.<String>
-      observableArrayList(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9")));
-      xAxis.setLabel("category");
-       
-      NumberAxis yAxis = new NumberAxis();
-      yAxis.setLabel("score");
-     
-      //Creating the Bar chart
-      BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis); 
-      barChart.setTitle("Comparison between various cars");
-        
-      //Prepare XYChart.Series objects by setting data       
-      XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-      series1.getData().add(new XYChart.Data<>("1", percentages.get(0)));
-      series1.getData().add(new XYChart.Data<>("2", percentages.get(1)));
-      series1.getData().add(new XYChart.Data<>("3", percentages.get(2)));
-      series1.getData().add(new XYChart.Data<>("4", percentages.get(3)));
-      series1.getData().add(new XYChart.Data<>("5", percentages.get(4)));
-      series1.getData().add(new XYChart.Data<>("6", percentages.get(5)));
-      series1.getData().add(new XYChart.Data<>("7", percentages.get(6)));
-      series1.getData().add(new XYChart.Data<>("8", percentages.get(7)));
-      series1.getData().add(new XYChart.Data<>("9", percentages.get(8)));
-        
-              
-      //Setting the data to bar chart       
-      barChart.getData().addAll(series1);
-        
-      //Creating a Group object 
-      Group root = new Group(barChart);
-        
-      //Creating a scene object
-      Scene scene = new Scene(root, 600, 400);
-
-      //Setting title to the Stage
-      stage.setTitle("Bar Chart");
-        
-      //Adding scene to the stage
-      stage.setScene(scene);
-        
-      //Displaying the contents of the stage
-      stage.show();        
-   }
+public class CustomerSystem{
     public static void printMenu(){
         // print menu
         System.out.println("Customer and Sales System");
         System.out.println("1. Enter Customer Information");
-        System.out.println("2. Generate Customer data");
-        System.out.println("3. Append Customer Data to existing File");
-        System.out.println("4. Report on total Sales");
-        System.out.println("5. Check for fraud in sales data");
+        System.out.println("2. Generate Customer Data");
+        System.out.println("3. Append Customer Data to Existing File");
+        System.out.println("4. Report on Total Sales");
+        System.out.println("5. Check for Fraud in Sales Data");
         System.out.println("9. Quit");
         System.out.println("Enter menu option (1-9)");
     }
@@ -116,9 +59,9 @@ public class CustomerSystem extends Application{
         } 
         while (strCard.length() < 9 || !validateCreditCard(creditCardNum));
         
-        System.out.println("Successful!");
+        System.out.println("Customer valdiated successfully!");
 
-        dataSaver.add(id + ", " + firstName + ", " + lastName + ", " + city + ", " + postalCode + ", " + creditCardNum); 
+        dataSaver.add(id + "," + firstName + "," + lastName + "," + city + "," + postalCode + "," + creditCardNum); 
         return dataSaver;
     }
 
@@ -133,10 +76,12 @@ public class CustomerSystem extends Application{
                     return true; // This breaks out of the while loop and continues to the next section of the enterCustomerInfo() function
                 }
             }
-        } catch (IOException e) { //"catch" id used for error handling IOexceptions, such as file corruption, permissions, accessibility, etc
+        }
+        catch (IOException e) { //"catch" id used for error handling IOexceptions, such as file corruption, permissions, accessibility, etc
             e.printStackTrace();
             return false;
-        } finally {
+        } 
+        finally {
             if (csvReader != null) {
                 try {
                     csvReader.close();
@@ -215,7 +160,7 @@ public class CustomerSystem extends Application{
 
     public static void generateCustomerDataFile(int id, ArrayList<String> data){
         Scanner reader = new Scanner(System.in);
-        System.out.println("Enter file name (without extension): ");
+        System.out.println("Enter new csv file name (without extension): ");
         String fileName = reader.nextLine();
         System.out.println("Enter file location (ex: 'C:\\Users\\username\\Desktop\\'): ");
         String filePath = reader.nextLine();
@@ -223,7 +168,7 @@ public class CustomerSystem extends Application{
 
         try {
             if (newFile.createNewFile()){
-                System.out.println("File created: " + newFile.getName());
+                System.out.println("File successfully created: " + newFile.getName());
             }
             else {
                 System.out.println("File already exists.");
@@ -236,11 +181,11 @@ public class CustomerSystem extends Application{
 
         try {
             FileWriter myWriter = new FileWriter(newFile);
+            myWriter.write("ID,First Name,Last Name,City,Postal Code,Card Number\n");
             for (int i = 0; i < id; i++) {
                 myWriter.write(data.get(i) + "\n");
             }
             myWriter.close();
-            System.out.println("File successfully written.");
         }
         catch (IOException e) {
             System.out.println("Error");
@@ -250,23 +195,27 @@ public class CustomerSystem extends Application{
     
     public static void appendCustomerFile(int id,  ArrayList<String> data){
         Scanner reader = new Scanner(System.in);
-        System.out.println("What is the name and path of the existing file? ");
-        String file = reader.nextLine();
-        int newId = getId(data, file);
+        System.out.println("Enter existing file name (without extensions): ");
+        String fileName = reader.nextLine();
+        System.out.println("Enter path of existing file (ex: 'C:\\Users\\username\\Desktop\\'): ");
+        String fileLocation = reader.nextLine();
+        String filePath = fileLocation + fileName + ".csv";
+        int newId = getId(data, filePath);
         String holder = "";
         try {
-            FileWriter csvwriter = new FileWriter(file, true);
+            FileWriter csvwriter = new FileWriter(filePath, true);
             for (int i = 0; i < id; i++) {
                 holder = data.get(i);
                 char charId = (char)(newId + '0');
                 csvwriter.append(holder.replace(holder.charAt(0), charId) + "\n");
                 newId = newId + 1;
             }
+            System.out.println("Data successfully appended to " + filePath);
             csvwriter.close();
         }
         catch (IOException e) {
             System.out.println("Error");
-            e.printStackTrace();
+            e.printStackTrace(); //prints all issues
         }
     }
 
@@ -294,52 +243,184 @@ public class CustomerSystem extends Application{
     //Start of Benford's Law Functions
 
     public static String validateSalesFile(){
-        return null;
+        Scanner reader = new Scanner(System.in);
+
+        Boolean fileFound = false;
+        File filePath;
+        String fileLocation;
+        String strFilePath = "";
+
+        while(fileFound == false){
+                System.out.println("Enter the file name (without extension) or enter 'D' to load the default sales file: ");
+                String fileName = reader.nextLine();
+                if (!fileName.equals("D")){
+                    System.out.println("Enter the file location (C:\\Users\\username\\Desktop\\Grade 11 Computer Science\\): ");
+                    fileLocation = reader.nextLine();
+                    filePath = new File (fileLocation + fileName + ".csv");
+                }
+                else{
+                    filePath = new File ("sales.csv");
+                    fileLocation = "";
+                    fileName = "sales";
+                }
+                if (filePath.exists()){
+                    fileFound = true;
+                }
+                else{
+                    System.out.println("File not found. Please enter a valid file name and location.");
+                }
+                strFilePath = fileLocation + fileName + ".csv";
+
+        } 
+        return strFilePath;
+    }
+    
+
+   public static ArrayList<String> createSalesList(String strFilePath) {   
+    ArrayList<String> arr = new ArrayList<String>();
+    try {
+        BufferedReader br = new BufferedReader(new FileReader(strFilePath));
+        String row;
+        while ((row = br.readLine()) != null) {
+            String[] numArray = row.split(",");
+            for (String numStr : numArray) {
+                try {
+                    Double num = Double.parseDouble(numStr); //used to test if numStr is able to be converted to a Double. If not, non-numerical values are caught and skipped
+                    arr.add(Character.toString(numStr.charAt(0)));
+                } 
+                catch (NumberFormatException e) {
+                    // skip non-numeric values
+                }
+            }
+        }
+        System.out.println(arr);
+        br.close();
+    } 
+    catch (IOException e) {
+        e.printStackTrace();
+    }
+    return arr;
+}
+
+    public static ArrayList<Integer> findFrequencies(ArrayList<String> salesList){
+
+        ArrayList<Integer> frequencyList = new ArrayList<Integer>();
+        int digitFrequency;
+
+        for (int i = 0; i < 9; i++) {
+            digitFrequency = Collections.frequency(salesList, String.valueOf(i+1));
+            frequencyList.add(digitFrequency);
+        }
+
+        System.out.println(frequencyList);
+        return frequencyList;
+
     }
 
-    public static ArrayList createSalesList(){
-        return null;
-    }
+    public static ArrayList<Double> calculatePercentage(ArrayList<Integer> frequencyList){
 
-    public static void findFrequencies(){
+        ArrayList<Double> percentageList = new ArrayList<Double>();
+        int totalDigits = 0;
+        
+        // adds up all of the elements in frequencyList to find the total number of digits
+        for (int i = 0; i < frequencyList.size(); i++) {
+            totalDigits += frequencyList.get(i);
+        }
 
-    }
+        for (int i = 0; i < frequencyList.size(); i++) {
+            double percentage = Math.round(frequencyList.get(i) * 1000.0 / totalDigits) / 10.0;
+            percentageList.add(percentage);
+        }
 
-    public static void calculatePercentage(){
-
+        System.out.println(percentageList);
+        return percentageList;
     }
 
     public static void plotGraph(){
+        /*
+import java.lang.reflect.Array;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.stage.Stage;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+
+
+public class CustomerSystem extends Application{
+    @Override
+    public void start(Stage stage) {    
+    //Defining the axes              
+    CategoryAxis xAxis = new CategoryAxis(); 
+    ArrayList<Double> percentages = new ArrayList<Double>(Arrays.asList(10.5, 9.5, 8.5, 7.5, 6.5, 5.5, 4.5, 3.5, 2.5));
+    xAxis.setCategories(FXCollections.<String>
+    observableArrayList(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9")));
+    xAxis.setLabel("category");
+
+    NumberAxis yAxis = new NumberAxis();
+    yAxis.setLabel("score");
+
+    //Creating the Bar chart
+    BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis); 
+    barChart.setTitle("Comparison between various cars");
+        
+    //Prepare XYChart.Series objects by setting data       
+    XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+    series1.getData().add(new XYChart.Data<>("1", percentages.get(0)));
+    series1.getData().add(new XYChart.Data<>("2", percentages.get(1)));
+    series1.getData().add(new XYChart.Data<>("3", percentages.get(2)));
+    series1.getData().add(new XYChart.Data<>("4", percentages.get(3)));
+    series1.getData().add(new XYChart.Data<>("5", percentages.get(4)));
+    series1.getData().add(new XYChart.Data<>("6", percentages.get(5)));
+    series1.getData().add(new XYChart.Data<>("7", percentages.get(6)));
+    series1.getData().add(new XYChart.Data<>("8", percentages.get(7)));
+    series1.getData().add(new XYChart.Data<>("9", percentages.get(8)));
+        
+            
+    //Setting the data to bar chart       
+    barChart.getData().addAll(series1);
+        
+    //Creating a Group object 
+    Group root = new Group(barChart);
+        
+    //Creating a scene object
+    Scene scene = new Scene(root, 600, 400);
+
+    //Setting title to the Stage
+    stage.setTitle("Bar Chart");
+        
+    //Adding scene to the stage
+    stage.setScene(scene);
+        
+    //Displaying the contents of the stage
+    stage.show();        
+    }
+         */
 
     }
 
-    public static void checkFraud(){
+    public static void checkFraud(ArrayList<Double> percentageList){
 
+        double digit1Percentage = percentageList.get(0);
+
+        if (digit1Percentage >= 29 && digit1Percentage <= 32) {
+            System.out.println("\nFraud did not likely occur");
+        } 
+        else {
+            System.out.println("\nFraud likely occured");
+        }
     }
     
     public static void exportResults(){
-        ArrayList<Double> percentages = new ArrayList<Double>(Arrays.asList(10.5, 9.5, 8.5));
-        File newFile = new File("results.csv");
-        try { newFile.createNewFile(); }
-        catch (IOException e) {
-            System.out.println("Error");
-            e.printStackTrace();
-        }
-        try {
-            FileWriter myWriter = new FileWriter("sales.csv");
-            for (int i = 0; i < percentages.size(); i++) {
-                myWriter.write(percentages.get(i) + ", ");
-            }
-            myWriter.close();
-        }
-        catch (IOException e) {
-            System.out.println("Error");
-            e.printStackTrace();
-        }
+        
     }
 
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
+        boolean preReq = false;
         String userInput = "";
         String enterCustomerOption = "1";
         String createCustomerFile = "2";
@@ -350,9 +431,16 @@ public class CustomerSystem extends Application{
 
         // More variables for the main may be declared in the space below
 
+        //Initializing empty lists for Luhn Algorithm
         ArrayList<String> totalUsrData = new ArrayList<String>();
         ArrayList<String> editedData = new ArrayList<String>();
         int id = 0;
+
+        //Initializing empty lists for Benford's Law
+        ArrayList<String> salesList = new ArrayList<String>();
+        ArrayList<Integer> frequencyList = new ArrayList<Integer>();
+        ArrayList<Double> percentageList = new ArrayList<Double>();
+
         while (!userInput.equals(exitCondition)){
             printMenu(); // Printing out the main menu
             System.out.println("Enter a number: ");         
@@ -366,7 +454,6 @@ public class CustomerSystem extends Application{
             }
             else if (userInput.equals(createCustomerFile)){
                 // Only the line below may be editted based on the parameter list and how you design the method return
-                System.out.println(totalUsrData);
                 generateCustomerDataFile(id, totalUsrData);
                 totalUsrData.clear();
                 id = 0;
@@ -378,15 +465,24 @@ public class CustomerSystem extends Application{
             }
             else if (userInput.equals(reportSalesOption)){
                 String filePath = validateSalesFile();
-                ArrayList<String> salesList = new ArrayList<String>();
-                salesList = createSalesList();
+                salesList = createSalesList(filePath);
+                System.out.println("Sales file data loaded successfully!");
+                preReq = true; //Allows the user to c
             }
-            else if (userInput.equals(checkFraudOption)){ 
-                checkFraud();
+            else if (userInput.equals(checkFraudOption) && (preReq == true)){ 
+                frequencyList = findFrequencies(salesList);
+                percentageList = calculatePercentage(frequencyList);
+                //plot graph here
+                checkFraud(percentageList);
             }
             else{
-                System.out.println("Please type in a valid option (A number from 1-9)");
-                userInput = reader.nextLine(); 
+                //if prerequisite (completing option 4 before choosing option 5) is not met 
+                if(preReq == false){ 
+                    System.out.println("Please report sales data first (option 4)");
+                }
+                else{
+                    System.out.println("Please type in a valid option (A number from 1-9)");
+                }
             }
         }
         // Exits once the user types 
