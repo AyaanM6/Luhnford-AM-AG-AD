@@ -21,13 +21,12 @@ public class CustomerSystem extends Application {
     private static ArrayList<Double> percentList = new ArrayList<Double>();
     // Overrides existing method in parent class
     @Override
+    /**
+     * Starts a JavaFX application by creating a bar chart that displays the frequency percentage of digit appearance in a file according to Benford's Law.
+     * The X axis displays the first digit of the numbers, and the Y axis displays the frequency percentage which is found through the percentList.
+     * @param stage The primary stage for the application, which is used to get the values of percentList
+    */
     public void start(Stage stage) {    
-        /**
-         * Starts a JavaFX application by creating a bar chart that displays the frequency percentage of digit appearance in a file according to Benford's Law.
-         * The X axis displays the first digit of the numbers, and the Y axis displays the frequency percentage which is found through the percentList.
-         * 
-         * @param stage The primary stage for the application, which is used to get the values of percentList
-        */
 
         //Defining the axes              
         CategoryAxis xAxis = new CategoryAxis(); 
@@ -85,11 +84,11 @@ public class CustomerSystem extends Application {
         stage.show();      
     }
     
+    /**
+     * Displays a menu of options for the customer and sales system.
+     * Method is called at the beginning of the program and after a task is completed, while the exit condition is not met 
+    */
     public static void printMenu(){
-        /**
-         * Displays a menu of options for the customer and sales system.
-         * Method is called at the beginning of the program and after a task is completed, while the exit condition is not met 
-        */
 
         System.out.println("Customer and Sales System");
         System.out.println("1. Enter Customer Information");
@@ -101,16 +100,14 @@ public class CustomerSystem extends Application {
         System.out.println("Enter menu option (1-9)");
     }
 
+    /**
+     * Prompts the user to enter customer information in the order of their first name, last name, city, postal code and card number.
+     * Validates the postal code and credit card number by calling their respective validation functions (see validatePostalCode() and validateCreditCard()
+     * @param id The unique ID of the user. 
+     * @param dataSaver list of user datas collected.
+     * @return dataSaver A list of strings containing the validated user's data in the following format: "id,firstName,lastName,city,postalCode,creditCardNum"
+    */
     public static ArrayList<String> enterCustomerInfo(int id, ArrayList<String> dataSaver){
-        /**
-         * Prompts the user to enter customer information in the order of their first name, last name, city, postal code and card number.
-         * Validates the postal code and credit card number by calling their respective validation functions (see validatePostalCode() and validateCreditCard()).
-         * 
-         * @param id The unique ID of the user. 
-         * @param dataSaver list of user datas collected.
-         * 
-         * @return dataSaver A list of strings containing the validated user's data in the following format: "id,firstName,lastName,city,postalCode,creditCardNum"
-         */
 
         // get user input firstname lastname city
         Scanner reader = new Scanner(System.in);
@@ -164,17 +161,15 @@ public class CustomerSystem extends Application {
         return dataSaver;
     }
 
+    /**
+     * Determines whether an inputted postal code is valid by checking whether it is at least three characters long and exists in postal_codes.csv. 
+     * If the postal code does not pass validation, the function returns "false" 
+     * If the postal code is validated, the function returns "true"
+     * @param postalCode The postal code to be validated.
+     * @return True if the postal code is valid, False otherwise.
+    */
     public static boolean validatePostalCode(String postalCode) {
-        /**
-         * Determines whether an inputted postal code is valid by checking whether it is at least three characters long and exists in postal_codes.csv. 
-         * If the postal code does not pass validation, the function returns "false" 
-         * If the postal code is validated, the function returns "true"
-         * 
-         * @param postalCode The postal code to be validated.
-         * 
-         * @return boolean True if the postal code is valid, False otherwise.
-         */
-
+        
         BufferedReader csvReader = null;
         try {
             csvReader = new BufferedReader(new FileReader("postal_codes.csv"));
@@ -203,14 +198,12 @@ public class CustomerSystem extends Application {
         return false;
     }
 
+    /**
+     * Reverses credit card number and returns it as a long data type
+     * @param cardNum inputted credit card number. Is stored as long as it can be greater than 9 digits
+     * @return numberConverted reversed digits stored as a long
+    */
     public static long reverseCard(long cardNum){
-        /**
-         * Reverses credit card number and returns it as a long data type
-         * 
-         * @param cardNum inputted credit card number. Is stored as long as it can be greater than 9 digits
-         * 
-         * @return numberConverted reversed digits stored as a long
-         */
 
         // converts cardNum into a string
         String strCardNum = Long.toString(cardNum);
@@ -232,17 +225,15 @@ public class CustomerSystem extends Application {
         return numberConverted;
     }
     
+    /**
+     * Calculates the sum of all even digits in a reversed string, where each even digit is doubled 
+     * and the sum of the digits in the resulting number is taken if the resulting number is a two-digit number.
+     * @param reversed a string in reverse order containing the even digits to be summed
+     * @param num an integer representing the current sum of even digits
+     * @param i an integer representing the current index of the digit being processed in the string
+     * @return evenVal: the int sum of all even digits
+    */
     public static int evenSum(String reversed, int num, int i){
-        /**
-         * Calculates the sum of all even digits in a reversed string, where each even digit is doubled 
-         * and the sum of the digits in the resulting number is taken if the resulting number is a two-digit number.
-         * 
-         * @param reversed a string in reverse order containing the even digits to be summed
-         * @param num an integer representing the current sum of even digits
-         * @param i an integer representing the current index of the digit being processed in the string
-         * 
-         * @return evenVal: the int sum of all even digits
-        */
 
         int doubleNum = Character.getNumericValue(reversed.charAt(i+1)) * 2;
         int evenVal = 0;
@@ -259,30 +250,26 @@ public class CustomerSystem extends Application {
         return evenVal;
     }
 
+    /**
+     * Calculates the sum of all odd digits in a reversed string
+     * @param reversed a string in reverse order containing the odd digits to be summed
+     * @param num an integer representing the current sum of odd digits
+     * @param i an integer representing the current index of the digit being processed in the string
+     * @return oddVal the int sum of all odd digits
+    */
     public static int oddSum(String reversed, int num, int i){
-        /**
-         * Calculates the sum of all odd digits in a reversed string
-         * 
-         * @param reversed a string in reverse order containing the odd digits to be summed
-         * @param num an integer representing the current sum of odd digits
-         * @param i an integer representing the current index of the digit being processed in the string
-         * 
-         * @return oddVal the int sum of all odd digits
-        */
 
         // adds every odd number into oddVal
         int oddVal =  num + Character.getNumericValue(reversed.charAt(i-1));
         return oddVal;
     }
 
+    /**
+     * Validates the given credit card number using the Luhn Algorithm.
+     * @param num a long integer representing the credit card number to be validated
+     * @return True if the credit card number is valid, false otherwise
+    */
     public static boolean validateCreditCard(long num){
-        /**
-         * Validates the given credit card number using the Luhn Algorithm.
-         * 
-         * @param num a long integer representing the credit card number to be validated
-         * 
-         * @return a boolean value of true if the credit card number is valid, false otherwise
-        */
 
         long reversedNum = reverseCard(num);
         int odd = 0;
@@ -312,15 +299,13 @@ public class CustomerSystem extends Application {
         }
     }
 
+    /**
+     * Generates a new CSV file with customer data.
+     * @param id The number of customers in the file.
+     * @param data The customer data to write to the file.
+     * @throws IOException If an error occurs while creating or writing to the file.
+    */
     public static void generateCustomerDataFile(int id, ArrayList<String> data){
-        /**
-         * Generates a new CSV file with customer data.
-         * 
-         * @param id The number of customers in the file.
-         * @param data The customer data to write to the file.
-         * 
-         * @throws IOException If an error occurs while creating or writing to the file.
-        */
 
         Scanner reader = new Scanner(System.in);
         // takes the file name and path for the file the user wants to generate
@@ -360,15 +345,13 @@ public class CustomerSystem extends Application {
         }
     }
     
+    /**
+     * Appends customer data to an existing CSV file.
+     * @param id the number of customer data entries to append to the file.
+     * @param data an ArrayList of Strings containing customer data in the format
+     * @throws IOException if an I/O error occurs while opening or appending to the file.
+    */
     public static void appendCustomerFile(int id,  ArrayList<String> data){
-        /**
-         * Appends customer data to an existing CSV file.
-         * 
-         * @param id the number of customer data entries to append to the file.
-         * @param data an ArrayList of Strings containing customer data in the format
-         *
-         * @throws IOException if an I/O error occurs while opening or appending to the file.
-        */
 
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter existing file name (without extensions): ");
@@ -397,12 +380,11 @@ public class CustomerSystem extends Application {
         }
     }
 
+    /**
+     * Gets the ID for the customer information by counting the number of rows in the existing file. The ID is the number of rows in the file plus one.
+     * @return num: An integer representing the ID for the new customer data
+    */
     public static int getId(ArrayList<String> usrData, String fileName){
-        /**
-         * Gets the ID for the customer information by counting the number of rows in the existing file. The ID is the number of rows in the file plus one.
-         * 
-         * @return num: An integer representing the ID for the new customer data
-         */
 
         BufferedReader reader = null;
         String row;
@@ -427,13 +409,12 @@ public class CustomerSystem extends Application {
 
     //Start of Benford's Law Functions (graph plotting done at top)
 
+    /**
+     * Loops and prompts the user to enter the name and location of a valid sales file. 
+     * If the user enters 'D', the default sales file 'sales.csv' is used.
+     * @return strFilePath: the file path of the valid sales file as a string.
+    */
     public static String validateSalesFile(){
-        /**
-         * Loops and prompts the user to enter the name and location of a valid sales file. 
-         * If the user enters 'D', the default sales file 'sales.csv' is used.
-         * 
-         * @return strFilePath the file path of the valid sales file as a string.
-        */
 
         Scanner reader = new Scanner(System.in);
 
@@ -468,15 +449,13 @@ public class CustomerSystem extends Application {
         } 
         return strFilePath;
     }
-    
+
+    /**
+     * This method reads in a CSV file at the specified file path and returns an ArrayList of the first digits of each numerical value in the file.
+     * @param strFilePath the file path of the CSV file to be read
+     * @return arr: ArrayList of the first digits of each numerical value in the file
+    */
    public static ArrayList<String> createSalesList(String strFilePath) {
-        /**
-         * This method reads in a CSV file at the specified file path and returns an ArrayList of the first digits of each numerical value in the file.
-         * 
-         * @param strFilePath the file path of the CSV file to be read
-         * 
-         * @return arr ArrayList of the first digits of each numerical value in the file
-        */
 
         ArrayList<String> arr = new ArrayList<String>();
         try {
@@ -506,14 +485,12 @@ public class CustomerSystem extends Application {
         return arr;
     }   
 
+    /**
+     * Calculates the frequency of each digit from 1-9 in the given sales list.
+     * @param salesList the ArrayList of the first digit of all sales represented as strings 
+     * @return frequencyList: the integer ArrayList of frequencies of digits from 1-9
+    */
     public static ArrayList<Integer> findFrequencies(ArrayList<String> salesList){
-        /**
-         * Calculates the frequency of each digit from 1-9 in the given sales list.
-         * 
-         * @param salesList the ArrayList of the first digit of all sales represented as strings
-         * 
-         * @return frequencyList the integer ArrayList of frequencies of digits from 1-9
-        */
 
         ArrayList<Integer> frequencyList = new ArrayList<Integer>();
         int digitFrequency;
@@ -528,14 +505,12 @@ public class CustomerSystem extends Application {
 
     }
 
+    /**
+     * Calculates the percentage of each digit in the sales list.
+     * @param frequencyList an ArrayList of integers representing the frequency of each digit in the sales list
+     * @return percentageList: ArrayList of doubles representing the frequency (percentage) of each digit in the sales list
+    */
     public static ArrayList<Double> calculatePercentage(ArrayList<Integer> frequencyList){
-        /**
-         * Calculates the percentage of each digit in the sales list.
-         * 
-         * @param frequencyList an ArrayList of integers representing the frequency of each digit in the sales list
-         * 
-         * @return percentageList an ArrayList of doubles representing the frequency (percentage) of each digit in the sales list
-        */
 
         ArrayList<Double> percentageList = new ArrayList<Double>();
         int totalDigits = 0;
@@ -554,14 +529,13 @@ public class CustomerSystem extends Application {
         return percentageList;
     }
 
+    /**
+     * This method checks whether or not fraud has occurred by analyzing the percentage of sales that begin with the digit 1.
+     * If the percentage falls within the range of 29-32%, fraud is deemed unlikely.
+     * If the percentage falls outside of this range, fraud is deemed likely.
+     * @param percentageList an ArrayList of percentages representing the frequency of sales that begin with each digit
+    */
     public static void checkFraud(ArrayList<Double> percentageList){
-        /**
-        This method checks whether or not fraud has occurred by analyzing the percentage of sales that begin with the digit 1.
-        If the percentage falls within the range of 29-32%, fraud is deemed unlikely.
-        If the percentage falls outside of this range, fraud is deemed likely.
-
-        @param percentageList an ArrayList of percentages representing the frequency of sales that begin with each digit
-        */
 
         double digit1Percentage = percentageList.get(0);
 
@@ -572,13 +546,12 @@ public class CustomerSystem extends Application {
             System.out.println("\nFraud likely occured");
         }
     }
-    
+
+    /**
+     * Exports the list of percentages to a CSV file named "results.csv"
+     * @param percentages an ArrayList of Doubles representing the percentages to be exported
+    */
     public static void exportResults(ArrayList<Double> percentages){
-        /**
-        Exports the list of percentages to a CSV file named "results.csv"
-        
-        @param percentages an ArrayList of Doubles representing the percentages to be exported
-        */
 
         File newFile = new File("results.csv");
         try { newFile.createNewFile(); }
@@ -588,6 +561,7 @@ public class CustomerSystem extends Application {
         }
         try {
             FileWriter myWriter = new FileWriter("sales.csv");
+            myWriter.write("Digit, Frequency (%)Digit, Frequency (%)");
             for (int i = 0; i < percentages.size(); i++) {
                 if (i == percentages.size()-1) {
                     myWriter.write(Double.toString(percentages.get(i)));
@@ -604,14 +578,13 @@ public class CustomerSystem extends Application {
         }
     }    
 
+    /**
+     * Displays a menu to the user and calls various functions based on user input.
+     * The program first initializes empty variables for Luhn Algorithm and Benford's Law.
+     * The user can choose to enter customer information, generate customer data file, append to customer data file,
+     * report sales data, check for fraud using Benford's Law, and exit the program.
+    */
     public static void main(String[] args) {
-        /**
-        Displays a menu to the user and calls various functions based on user input.
-        The program first initializes empty variables for Luhn Algorithm and Benford's Law.
-        
-        The user can choose to enter customer information, generate customer data file, append to customer data file,
-        report sales data, check for fraud using Benford's Law, and exit the program.
-        */
         
         Scanner reader = new Scanner(System.in);
         boolean preReq = false;
@@ -665,7 +638,6 @@ public class CustomerSystem extends Application {
             }
             else if (userInput.equals(checkFraudOption) && (preReq == true)){ 
                 frequencyList = findFrequencies(salesList);
-                percentageList = calculatePercentage(frequencyList);
                 percentList = calculatePercentage(frequencyList);
                 checkFraud(percentList);
                 exportResults(percentList);
