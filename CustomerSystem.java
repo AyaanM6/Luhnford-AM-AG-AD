@@ -476,7 +476,6 @@ public class CustomerSystem extends Application {
                     }
                 }
             }
-            System.out.println(arr);
             br.close();
         } 
         catch (IOException e) {
@@ -500,7 +499,6 @@ public class CustomerSystem extends Application {
             frequencyList.add(digitFrequency);
         }
 
-        System.out.println(frequencyList);
         return frequencyList;
 
     }
@@ -525,7 +523,6 @@ public class CustomerSystem extends Application {
             percentageList.add(percentage);
         }
 
-        System.out.println(percentageList);
         return percentageList;
     }
 
@@ -560,8 +557,8 @@ public class CustomerSystem extends Application {
             e.printStackTrace();
         }
         try {
-            FileWriter myWriter = new FileWriter("sales.csv");
-            myWriter.write("Digit, Frequency (%)Digit, Frequency (%)");
+            FileWriter myWriter = new FileWriter("results.csv");
+            myWriter.write("Digit, Frequency (%)Digit, Frequency (%)\n");
             for (int i = 0; i < percentages.size(); i++) {
                 if (i == percentages.size()-1) {
                     myWriter.write(Double.toString(percentages.get(i)));
